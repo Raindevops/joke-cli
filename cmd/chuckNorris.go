@@ -18,7 +18,7 @@ var chuckNorrisCmd = &cobra.Command{
 		category, _ := cmd.Flags().GetString("category")
 		list, _ := cmd.Flags().GetBool("list-categories")
 		if category != "" {
-			chucknorris.GetPhraseByCategory()
+			chucknorris.GetPhraseByCategory(category)
 		} else if list {
 			chucknorris.ListAllCategories()
 		} else {

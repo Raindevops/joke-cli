@@ -88,9 +88,38 @@ func ListAllCategories() {
 	fmt.Printf("%v", strings.Join(cat, ", "))
 }
 
-func GetPhraseByCategory() {
+func GetPhraseByCategory(category string) {
+	r, err := http.NewRequest(
+		http.MethodGet,
+		api_url+"random?category="+category,
+		nil,
+	)
+
+	if err != nil {
+		log.Printf("Could not get a Chuck Norris phrase with the category : %v. %v", category, err)
+	}
+
+	r.Header.Add("Accept", "application/json")
+	r.Header.Add("User-agent", "Joke CLI (https://github.com/Raindevops/Joke-cli)")
+
+	rsp, err := http.DefaultClient.Do(r)
+
+	if err != nil {
+		log.Printf("Could not make a request. %v", err)
+	}
+
+	rspBytes, err := io.ReadAll(rsp.Body)
+
+	if err != nil {
+		log.Printf("Could not read response Body. %v", err)
+	}
+
+	phrase := Phrase{}
+
+	if err := json.Unmarshal(rspBytes, &phrase); err != nil {
+		log.Printf("Could not unmarshall responseBytes. %v", err)
+	}
+
+	fmt.Printf(phrase.Phrase)
 
 }
-
-// list categories
-// joke by category
