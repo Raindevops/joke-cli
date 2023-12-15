@@ -43,5 +43,5 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	dadjokeCmd.PersistentFlags().String("term", "", "A search term for a dad joke.")
+	dadjokeCmd.Flags().String("term", "", "A search term for a dad joke.")
 }
