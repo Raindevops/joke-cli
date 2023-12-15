@@ -16,9 +16,11 @@ var chuckNorrisCmd = &cobra.Command{
 	Long:  `Print a Chuck Norris phrase using the api https://api.chucknorris.io/`,
 	Run: func(cmd *cobra.Command, args []string) {
 		category, _ := cmd.Flags().GetString("category")
-
+		list, _ := cmd.Flags().GetBool("list-categories")
 		if category != "" {
 			chucknorris.GetPhraseByCategory()
+		} else if list {
+			chucknorris.ListAllCategories()
 		} else {
 			chucknorris.RandomPhrase()
 		}
@@ -36,5 +38,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// chuckNorrisCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	chuckNorrisCmd.PersistentFlags().String("category", "", "Find a Chuck Norris phrase by category")
+	chuckNorrisCmd.Flags().BoolP("list-categories", "", false, "List all categories availabled for Chuck Norris phrases")
 }
