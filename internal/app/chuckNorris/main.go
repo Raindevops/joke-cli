@@ -17,7 +17,7 @@ type Phrase struct {
 }
 
 func RandomPhrase() {
-	responseBytes := getRandomPhrase()
+	responseBytes := getDataFromApi(api_url + "random")
 	phrase := Phrase{}
 	if err := json.Unmarshal(responseBytes, &phrase); err != nil {
 		fmt.Printf("Could not unmarshal responseByte. %v", err)
@@ -26,77 +26,38 @@ func RandomPhrase() {
 	fmt.Println(string(phrase.Phrase))
 }
 
-func getRandomPhrase() []byte {
-	r, err := http.NewRequest(
-		http.MethodGet,
-		api_url+"random",
-		nil,
-	)
-
-	if err != nil {
-		log.Printf("Could not get a Chuck Norris phrase. %v", err)
-	}
-
-	r.Header.Add("Accept", "application/json")
-	r.Header.Add("User-agent", "Joke CLI (https://github.com/Raindevops/joke-cli)")
-
-	rsp, err := http.DefaultClient.Do(r)
-
-	if err != nil {
-		log.Printf("Could not make a request. %v", err)
-	}
-
-	responseBytes, err := io.ReadAll(rsp.Body)
-	if err != nil {
-		log.Printf("Could not read response Body. %v", err)
-	}
-
-	return responseBytes
-}
-
 func ListAllCategories() {
-	r, err := http.NewRequest(
-		http.MethodGet,
-		api_url+"categories",
-		nil,
-	)
-
-	if err != nil {
-		log.Printf("Could not get Categories from the api")
-	}
-
-	r.Header.Add("Accept", "application/json")
-	r.Header.Add("User-agent", "Joke CLI (https://github.com/Raindevops/joke-cli)")
-
-	rsp, err := http.DefaultClient.Do(r)
-
-	if err != nil {
-		log.Printf("Could not request the api")
-	}
-
-	responseBytes, err := io.ReadAll(rsp.Body)
-	if err != nil {
-		log.Printf("Could not read response Body. %v", err)
-	}
-
+	rspBytes := getDataFromApi(api_url + "categories")
 	var cat []string
 
-	if err := json.Unmarshal(responseBytes, &cat); err != nil {
-		log.Printf("Could not unmarshall responsebyte. %v", err)
+	if err := json.Unmarshal(rspBytes, &cat); err != nil {
+		log.Printf("Could not unmarshall responseByte. %v", err)
 	}
 
 	fmt.Printf("%v", strings.Join(cat, ", "))
 }
 
 func GetPhraseByCategory(category string) {
+	rspBytes := getDataFromApi(api_url + "random?category=" + category)
+	phrase := Phrase{}
+
+	if err := json.Unmarshal(rspBytes, &phrase); err != nil {
+		log.Printf("Could not unmarshall responseBytes. %v", err)
+	}
+
+	fmt.Printf(phrase.Phrase)
+
+}
+
+func getDataFromApi(url string) []byte {
 	r, err := http.NewRequest(
 		http.MethodGet,
-		api_url+"random?category="+category,
+		url,
 		nil,
 	)
 
 	if err != nil {
-		log.Printf("Could not get a Chuck Norris phrase with the category : %v. %v", category, err)
+		log.Printf("Could not create a new request to the api. %v", err)
 	}
 
 	r.Header.Add("Accept", "application/json")
@@ -114,12 +75,5 @@ func GetPhraseByCategory(category string) {
 		log.Printf("Could not read response Body. %v", err)
 	}
 
-	phrase := Phrase{}
-
-	if err := json.Unmarshal(rspBytes, &phrase); err != nil {
-		log.Printf("Could not unmarshall responseBytes. %v", err)
-	}
-
-	fmt.Printf(phrase.Phrase)
-
+	return rspBytes
 }
