@@ -3,11 +3,10 @@ package dadjoke
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"math/rand"
-	"net/http"
 	"time"
+	"tools-cli/internal/api"
 )
 
 const api_url = "https://icanhazdadjoke.com/"
@@ -26,7 +25,7 @@ type SearchResult struct {
 }
 
 func GetRandomJoke() {
-	responseBytes := getJokeData(api_url)
+	responseBytes := api.GetDataFromApi(api_url)
 	joke := Joke{}
 
 	if err := json.Unmarshal(responseBytes, &joke); err != nil {
@@ -36,42 +35,13 @@ func GetRandomJoke() {
 	fmt.Println(string(joke.Joke))
 }
 
-func getJokeData(baseAPI string) []byte {
-	r, err := http.NewRequest(
-		http.MethodGet,
-		baseAPI,
-		nil,
-	)
-
-	if err != nil {
-		log.Printf("Cloud not request a dadjoke. %v", err)
-	}
-
-	r.Header.Add("Accept", "application/json")
-	r.Header.Add("User-agent", "Joke CLI (https://github.com/Raindevops/joke-cli)")
-
-	rsp, err := http.DefaultClient.Do(r)
-
-	if err != nil {
-		log.Printf("Could not make a request. %v", err)
-	}
-
-	responseBytes, err := io.ReadAll(rsp.Body)
-
-	if err != nil {
-		log.Printf("Could not read response Body. %v", err)
-	}
-
-	return responseBytes
-}
-
 func GetRandomJokeWithTerm(jokeTerm string) {
 	total, results := getJokeDataWithTerm(jokeTerm)
 	randomiseJokeList(total, results)
 }
 
 func getJokeDataWithTerm(jokeTerm string) (totalJokes int, jokeList []Joke) {
-	responseBytes := getJokeData(api_url + "/search?term=" + jokeTerm)
+	responseBytes := api.GetDataFromApi(api_url + "/search?term=" + jokeTerm)
 
 	jokeListRaw := SearchResult{}
 
