@@ -48,7 +48,7 @@ func getJokeData(baseAPI string) []byte {
 	}
 
 	r.Header.Add("Accept", "application/json")
-	r.Header.Add("User-Agent", "Dadjoke CLI (https://github.com/example/dadjoke)")
+	r.Header.Add("User-agent", "Joke CLI (https://github.com/Raindevops/joke-cli)")
 
 	rsp, err := http.DefaultClient.Do(r)
 
