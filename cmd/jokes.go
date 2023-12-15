@@ -4,31 +4,20 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
+	"tools-cli/internal/app/jokes"
 
 	"github.com/spf13/cobra"
 )
 
-// jokesCmd represents the jokes command
 var jokesCmd = &cobra.Command{
 	Use:   "jokes",
-	Short: "A brief description of your command",
-	Long:  ``,
+	Short: "Get a random joke",
+	Long:  `This command fetch a random joke from the official joke API. See the github project for more informations : https://github.com/15Dkatz/official_joke_api `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("jokes called")
+		jokes.GetJoke()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(jokesCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// jokesCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// jokesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
