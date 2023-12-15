@@ -44,4 +44,6 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	dadjokeCmd.PersistentFlags().String("term", "", "A search term for a dad joke.")
+	chuckNorrisCmd.PersistentFlags().String("category", "", "Find a Chuck Norris phrase by category")
+	chuckNorrisCmd.PersistentFlags().String("list-categories", "", "List all categories availabled")
 }
