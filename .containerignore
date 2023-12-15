@@ -1,0 +1,5 @@
+Containerfile
+vendor/
+.github/
+.gitignore
+.git/

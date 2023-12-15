@@ -4,7 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"tools-cli/internal/app/jokes"
+	"joke-cli/internal/app/jokes"
 
 	"github.com/spf13/cobra"
 )
