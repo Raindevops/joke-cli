@@ -1,0 +1,74 @@
+name: Dev go actions
+run-name: Build the application for continous integration
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  default-registry: docker.io
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.19','1.20','1.21']
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      
+      - name: Install dependencies
+        run: go get . 
+      
+      - name: Run tests
+        run: go test ./internal/...
+
+  build-the-project:
+    needs: [run-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.19','1.20','1.21']
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      
+      - name: Install dependencies
+        run: go get .
+      
+      - name: Build 
+        run: go build
+
+  build-and-push-container-image:
+    needs: [build-the-project]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Buildah Action
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.default-registry }}/${{ secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
+          tags: '${{ github.sha }}'
+          containerfiles: |
+            ./Containerfile
+      
+      - name: Login to dockerhub
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PWD }}
+          registry: ${{ env.default-registry }}
+      
+      - name: Push ${{ env.default-registry }}/${{ secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }} to ${{ env.default-registry }}
+        run: podman push ${{ env.default-registry }}/${{ secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}:${{ github.sha }}
