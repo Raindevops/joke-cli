@@ -3,9 +3,9 @@ package chucknorris
 import (
 	"encoding/json"
 	"fmt"
+	"joke-cli/internal/api"
 	"log"
 	"strings"
-	"tools-cli/internal/api"
 )
 
 const api_url = "https://api.chucknorris.io/jokes/"

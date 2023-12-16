@@ -3,10 +3,10 @@ package dadjoke
 import (
 	"encoding/json"
 	"fmt"
+	"joke-cli/internal/api"
 	"log"
 	"math/rand"
 	"time"
-	"tools-cli/internal/api"
 )
 
 const api_url = "https://icanhazdadjoke.com/"

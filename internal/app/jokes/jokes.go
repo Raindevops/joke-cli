@@ -3,9 +3,9 @@ package jokes
 import (
 	"encoding/json"
 	"fmt"
+	"joke-cli/internal/api"
 	"log"
 	"time"
-	"tools-cli/internal/api"
 )
 
 const api_url = "https://official-joke-api.appspot.com/"
