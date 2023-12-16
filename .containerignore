@@ -3,3 +3,4 @@ vendor/
 .github/
 .gitignore
 .git/
+README.md
